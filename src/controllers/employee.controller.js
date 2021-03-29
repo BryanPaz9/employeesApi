@@ -94,8 +94,8 @@ function login (req,res){
     Employee.findOne({email: params.email},(err,employee)=>{
         if(err) return res.status(500).send({message:'Request error.'});
         if(employee){
-            bcrypt.compare(params.password, employee.password,(err,check)=>{
-                if(check){
+            bcrypt.compare(params.password, employee.password,(err,gettoken)=>{
+                if(gettoken){
                     if(params.gettoken){
                         return res.status(200).send({
                             token:jwt.createToken(employee)
@@ -112,6 +112,42 @@ function login (req,res){
             return res.status(404).send({message:'Employee could not be login in.'})
         }
     });
+}
+
+function signUp(req,res){
+    var params = req.body;
+    var employee = new Employee();
+    if(params.code && params.firstName && params.lastName && params.email && params.password){
+        employee.code = params.code;
+        employee.firstName = params.firstName;
+        employee.lastName = params.lastName;
+        employee.email = params.email;
+        
+        Employee.find({$or:[
+            {email: params.email.toLowerCase()},
+            {code: params.code.toLowerCase()}
+        ]}).exec((err, employees) =>{
+            if(err) return res.status(500).send({message:'Request error.'});
+            if(employees && employees.length >=1){
+                return res.status(404).send({message:'Employee is already registered.'});
+            }else{
+                bcrypt.hash(params.password,null,null,(err,hash)=>{
+                    employee.password = hash;
+                    employee.save((err,employeeRegistered) =>{
+                        if(err) return res.status(500).send({message:'Save failed.'});
+                        if(employeeRegistered){
+                            return res.status(200).json({message:'Registered sucessful',employee:employeeRegistered,token:jwt.createToken(employeeRegistered)});
+                        }else{
+                            return res.status(404).send({message:'Could not be registered.'})
+                        }
+                    })
+                })
+            }
+
+        })
+    }else{
+        return res.status(500).send({message:'Complete all fields.'})
+    }
 }
 
 function getEmployees(req,res){
@@ -138,6 +174,7 @@ module.exports ={
     drop,
     login,
     getEmployees,
-    getEmployee
+    getEmployee,
+    signUp
 
 };

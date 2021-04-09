@@ -9,7 +9,7 @@ var EmployeeSchema = Schema({
     lastName : String,
     email: String,
     password: String,
-    age : Number,
+    age: Number,
     profileImage: String,
     role: String
 });

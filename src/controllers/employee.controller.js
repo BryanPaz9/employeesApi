@@ -136,7 +136,7 @@ function signUp(req,res){
                     employee.save((err,employeeRegistered) =>{
                         if(err) return res.status(500).send({message:'Save failed.'});
                         if(employeeRegistered){
-                            return res.status(200).json({message:'Registered sucessful',employee:employeeRegistered,token:jwt.createToken(employeeRegistered)});
+                            return res.status(200).json({employee:employeeRegistered,token:jwt.createToken(employeeRegistered)});
                         }else{
                             return res.status(404).send({message:'Could not be registered.'})
                         }

@@ -12,7 +12,7 @@ exports.ensureAuth = function(req,res,next){
     try {
         var payload = jwt.decode(token, secret);
         if(payload.exp<= moment().unix()){
-            return res.status(401).send({message:'Token has been expired.'});
+            return res.status(401).send({messsage:'Token has been expired.'});
         }
     } catch (exception) {
         return res.status(404).send({message:'Token is not valid.'});

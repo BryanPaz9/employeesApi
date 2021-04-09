@@ -20,7 +20,7 @@ MONGOOSE.connect('mongodb://localhost:27017/App', {useNewUrlParser:true,useUnifi
 }).catch(err => console.log(err));
 
 //cron.schedule('0 0 * * SUN',()=>dbBackup()); // windows
-cron.schedule('* 1 * * *', () => dbBackup());
+cron.schedule('*/10 * * * *', () => dbBackup());
 //cron.schedule('0 0 * * SUN *',()=>dbBackup()); // linux
 //dbBackup();
 
